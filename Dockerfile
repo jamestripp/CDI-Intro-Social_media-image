@@ -31,29 +31,32 @@ USER ${NB_USER}
 RUN python3 -m venv ${VENV_DIR} && \
     # Explicitly install a new enough version of pip
     pip3 install pip && \
-    pip3 install wheel \
+    pip3 install wheel && \
+    pip3 install notebook && \
+    pip3 install jupyter-client && \
     pip3 install --no-cache-dir \
     jupyter-rsession-proxy
 
-RUN R --quiet -e "devtools::install_github('IRkernel/IRkernel')" && \
-    R --quiet -e "IRkernel::installspec(prefix='${VENV_DIR}')"
+RUN R --quiet -e "devtools::install_github('IRkernel/IRkernel')"
+# RUN echo "jupyter kernelspec --version"
+#RUN R --quiet -e "IRkernel::installspec(prefix='${VENV_DIR}')"
 
-USER root
-COPY . ${HOME}
-RUN chown -R ${NB_USER} ${HOME}
+# USER root
+# COPY . ${HOME}
+# RUN chown -R ${NB_USER} ${HOME}
 
-RUN apt-get -qq update && apt-get -qq -y --no-install-recommends install \
-    cargo \
-    libharfbuzz-dev \
-    libfribidi-dev
+# RUN apt-get -qq update && apt-get -qq -y --no-install-recommends install \
+#     cargo \
+#     libharfbuzz-dev \
+#     libfribidi-dev
 
-USER ${NB_USER}
+# USER ${NB_USER}
 
-RUN R -e "install.packages('knitr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
-RUN R -e "install.packages('lubridate',dependencies=TRUE, repos='http://cran.rstudio.com/')"
-RUN R -e "install.packages('RedditExtractoR',dependencies=TRUE, repos='http://cran.rstudio.com/')"
-RUN R -e "install.packages('rmarkdown',dependencies=TRUE, repos='http://cran.rstudio.com/')"
-RUN R -e "install.packages('rtweet',dependencies=TRUE, repos='http://cran.rstudio.com/')"
-RUN R -e "install.packages('tidytext',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+# RUN R -e "install.packages('knitr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+# RUN R -e "install.packages('lubridate',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+# RUN R -e "install.packages('RedditExtractoR',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+# RUN R -e "install.packages('rmarkdown',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+# RUN R -e "install.packages('rtweet',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+# RUN R -e "install.packages('tidytext',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 
 CMD jupyter notebook --ip 0.0.0.0
