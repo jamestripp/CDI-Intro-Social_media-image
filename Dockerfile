@@ -5,6 +5,11 @@ COPY . ${HOME}
 RUN chown -R ${NB_USER} ${HOME}
 USER ${NB_USER}
 
+RUN apt-get -qq update && apt-get -qq -y --no-install-recommends install \
+    cargo \
+    libharfbuzz-dev \
+    libfribidi-dev
+
 RUN R -e "install.packages('knitr',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('lubridate',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('RedditExtractoR',dependencies=TRUE, repos='http://cran.rstudio.com/')"
